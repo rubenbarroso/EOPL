@@ -1,0 +1,32 @@
+;using the grammar that uses the Kleene star
+
+   <datum>
+=> <list>
+=> (<datum> <datum> <datum>)
+=> (<symbol> <datum> <datum>)
+=> (a <datum> <datum>)
+=> (a <string> <datum>)
+=> (a "mixed" <datum>)
+=> (a "mixed" <vector>)
+=> (a "mixed" #(<datum> <datum>))
+=> (a "mixed" #(<symbol> <datum>))
+=> (a "mixed" #(bag <datum>))
+=> (a "mixed" #(bag <dotted-datum>))
+=> (a "mixed" #(bag (<datum> . <datum>)))
+=> (a "mixed" #(bag (<symbol> . <datum>)))
+=> (a "mixed" #(bag (of . <datum>)))
+=> (a "mixed" #(bag (of . <symbol>)))
+=> (a "mixed" #(bag (of . data)))
+
+;let's see what happens with (a . b . c)
+
+;1st attempt of derivation
+   (<dotted-datum>)
+=> (<datum> <datum> . <datum>)    ;wrong, it lefts out the first period
+
+;2nd attempt of derivation
+   (dotted-datum)
+=> (<dotted-datum> . <datum>)
+=> ((<datum> . <datum>) . <datum>)   ;wrong
+
+;I am afraid there is not syntactic derivation of the grammar that (a . b . c) can't be done

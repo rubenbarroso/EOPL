@@ -1,0 +1,26 @@
+;without using the Kleene star
+
+<list>         ::= () | (<datum> . <list>)
+<dotted-datum> ::= (<datum> . <datum>) | (<datum> . <dotted-datum>)
+<vector>       ::= #() | #(<datum> . <vector>)
+<datum>        ::= <number> | <symbol> | <boolean> | <string> | <list> | <dotted-datum> | <vector>
+
+;derivation to prove (#t (foo . ()) 3) is a list with the new grammar
+
+   <list>
+=> (<datum> . <list>)
+=> (<datum> . (<datum> . <list>))
+=> (<datum> . (<datum> . (<datum> . <list>)))
+=> (<boolean> . (<datum> . (<datum> . <list>)))
+=> (#t . (<datum> . (<datum> . <list>)))
+=> (#t . (<list> . (<datum> . <list>)))
+=> (#t . ((<datum> . <list>) . (<datum> . <list>)))
+=> (#t . ((<datum> . ()) . (<datum> . <list>)))
+=> (#t . ((<symbol> . ()) . (<datum> . <list>)))
+=> (#t . ((foo . ()) . (<datum> . <list>)))
+=> (#t . ((foo . ()) . (<datum> . ())))
+=> (#t . ((foo . ()) . (<number> . ())))
+=> (#t . ((foo . ()) . (3 . ())))
+=> (#t . ((foo . ()) . (3)))       ; since (3 . ()) is equal to (3)
+=> (#t . ((foo . ()) 3))           ; and so forth
+=> (#t (foo . ()) 3)

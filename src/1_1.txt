@@ -1,0 +1,19 @@
+   <list-of-numbers>
+=> (<number> . <list-of-numbers>)
+=> (<number> . (<number> . <list-of-numbers>))
+=> (<number> . (<number> . (<number> . <list-of-numbers>)))
+=> (<number> . (<number> . (<number> . ())))
+=> (<number> . (<number> . (14 . ())))
+=> (<number> . (3 . (14 . ())))
+=> (-7 . (3 . (14 . ())))
+
+;or
+
+   <list-of-numbers>
+=> (<number> . <list-of-numbers>)
+=> (-7 . <list-of-numbers>)
+=> (-7 . (<number> . <list-of-numbers>))
+=> (-7 . (3 . <list-of-numbers>))
+=> (-7 . (3 . (<number> . <list-of-numbers>)))
+=> (-7 . (3 . (14 . <list-of-numbers>)))
+=> (-7 . (3 . (14 . ())))

@@ -1,0 +1,28 @@
+Prove that if e is an <expression>, then there are the same number of left and right parentheses in e, where:
+
+<expression> ::= <identifier>
+             ::= (lambda (<identifier>) <expression>)
+             ::= (<expression> <expression>)
+
+Let's use structural induction to prove it. The induction hypothesis, IH(l,r), is that any expression with l
+opening parenthesis has r corresponding closing ones, that is, l=r.
+
+1. IH(l,r) holds trivially if e is an <identifier>, which has 0 opening and closing parentheses, therefore IH(0,0).
+
+2. An expression with k opening parentheses has the same number of m closing parentheses, that is, IH(k,m) holds.
+   We need to show that IH(k+1,m+1) holds also: any <expression> with k+1 opening parentheses has m+1 closing
+   ones. If e has k+1 opening parentheses, then there are two possibilities according to the grammar:
+
+   (a) e may be of the form (lambda (i) e2). i is an identifier, therefore by (1) it holds that IH(0,0).
+       e2 is an expression and must have (k-1,m-1) parentheses, counting the parentheses surrounding the
+       identifier. Comparing the parenthesis to the left against the parentheses to the right, we have
+       that:
+
+       1 + 1 + (k-1) = 1 + (m-1) + 1
+
+       k+1 = m+1
+
+       Since IH(k,m) holds, which means that k=m, we have that k+1=m+1 and hence, IH(k+1,m+1) also holds.
+
+   (b) e is of the form (e1 e2). Since e has (k+1,m+1) parentheses, e1 and e2 must have (k,m) parentheses counting
+       both, which is true by IH(k,m).
