@@ -1,0 +1,1 @@
+;We already tested this in exercise 6.1

@@ -1,0 +1,22 @@
+The following Python example has been taken from:
+
+http://www.wellho.net/forum/Programming-in-Python-and-Ruby/Variable-scope-in-Python.html
+
+
+def demo (f_in):
+       global somevar  # shared with main code
+       demo.tom = 16   # An attribute accessible from main code
+       somevar += 1
+       another = 12    # A local variable, independent of main code
+       res = f_in+14   # Value passed in (f_in)
+       return res
+
+somevar = 27    # accessed in function via global
+another = 17    # not accessed in function
+pval = 16       # accessed in function via parameter
+
+print demo(pval)
+
+print demo.tom  # function attribute
+print somevar
+print another

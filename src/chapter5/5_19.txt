@@ -1,0 +1,29 @@
+(define roll-up-method-decls
+  (lambda (c-decl super-name field-ids)
+    (merge-methods
+      (class-name->methods super-name)
+      (map
+        (lambda (m-decl)
+          (a-method m-decl super-name field-ids))
+        (class-decl->method-decls c-decl)))))
+
+(define merge-methods
+  (lambda (super-methods methods)
+    (cond
+      ((null? super-methods) methods)
+      (else
+        (let ((overriding-method
+                (lookup-method
+                  (method->method-name (car super-methods))
+                  methods)))
+          (if (method? overriding-method)
+            (cons overriding-method
+              (merge-methods (cdr super-methods)
+                (remove-method overriding-method methods)))
+            (cons (car super-methods)
+              (merge-methods (cdr super-methods)
+                 methods))))))))
+
+
+If we had used append to implement merge-methods, then the overriding methods would not replace the overriden ones
+from the superclasses, and we could end up with more than one method for each method name.

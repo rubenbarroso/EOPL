@@ -1,0 +1,12 @@
+Because se is an <s-list> and (subst new old se) is guaranteed to halt because either:
+
+ 1) se is (), and as such (subst new old se) returns () and therefore it halts.
+
+ or
+
+ 2) se is of the form (<symbol-expression> . <s-list>), in such case (subst new old se) performs two
+    recursive calls in the if alternative, one of them mutual to subst-in-symbol-expression, in which
+    the s-list arguments have always fewer elements than in the original se, as represented by
+    (car slist) and (cdr slist). This eventually halts since both termination conditions for null?
+    or symbol? are reached.
+

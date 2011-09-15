@@ -1,0 +1,181 @@
+1. proc(? f, ? g, ? p, ? x) if (p (f x)) then (g 1 x) else add1((f x))
+
+Expression                      Type Variable
+f                               tf
+g                               tg
+p                               tp
+x                               tx
+proc(? f, ? g, ? p, ? x)
+  if (p (f x))
+     then (g 1 x)
+     else add1((f x))           t0
+if (p (f x))
+   then (g 1 x)
+   else add1((f x))             t1
+(p (f x))                       t2
+(f x)                           t3
+(g 1 x)                         t4
+add1((f x))                     t5
+
+
+Expression                      Type Equation
+proc(? f, ? g, ? p, ? x)
+  if (p (f x))
+     then (g 1 x)
+     else add1((f x))           t0 = (tf * tg * tp * tx -> t1)
+if (p (f x))
+   then (g 1 x)
+   else add1((f x))             t1 = t4 = t5
+(p (f x))                       tp = (t3 -> t2)
+(f x)                           tf = (tx -> t3)
+(g 1 x)                         tg = (int * tx -> t4)
+add1((f x))                     (int -> int) = (tf -> t5)
+
+Direct deductions:
+t5 = int
+tf = int
+t4 = int
+t1 = int
+
+We know that the condition of the if is of type bool:
+t2 = bool
+
+We also know that (f x) must be an int (by the last equation):
+t3 = int
+
+We are left with:
+tf = (tx -> int)
+tg = (int * tx -> int)
+tp = (int -> bool)
+
+Lastly, the type of the original expression, t0, is:
+t0 = ((tx -> int) * (int * tx -> int) * (int -> bool) * tx -> int)
+
+t0 is polymorphic in tx.
+
+--
+
+2. proc(? x, ? p, ? f) if (p x) then add1(x) else (f p x)
+
+Expression                      Type Variable
+x                               tx
+p                               tp
+f                               tf
+proc(? x, ? p, ? f)
+  if (p x)
+  then add1(x)
+  else (f p x)                  t0
+if (p x)
+  then add1(x)
+  else (f p x)                  t1
+(p x)                           t2
+add1(x)                         t3
+(f p x)                         t4
+
+Expression                      Type Equation
+proc(? x, ? p, ? f)
+  if (p x)
+  then add1(x)
+  else (f p x)                  t0 = (tx * tp * tf -> t3)
+if (p x)
+  then add1(x)
+  else (f p x)                  t1 = t3 = t4
+(p x)                           tp = (tx -> t2)
+add1(x)                         (int -> int) = (tx -> t3)
+(f p x)                         tf = (tp * tx -> t4)
+
+Direct deductions:
+tx = int
+t3 = int
+t1 = int
+t4 = int
+
+(p x) must be of type bool:
+t2 = int
+
+We have now all information:
+tp = (int -> bool)
+tf = ((int -> bool) * int -> int)
+
+Finally:
+t0 = (int * (int -> bool) * ((int -> bool) * int -> int) -> int)
+
+--
+
+3. proc(? x, ? p, ? f, ?g) if (p add1(x)) then add1((f x)) else (g f x)
+
+Expression                      Type Variable
+x                               tx
+p                               tp
+f                               tf
+g                               tg
+proc(? x, ? p, ? f, ?g)
+  if (p add1(x))
+  then add1((f x))
+  else (g f x)                  t0
+if (p add1(x))
+  then add1((f x))
+  else (g f x)                  t1
+(p add1(x))                     t2
+add1(x)                         t3
+add1((f x))                     t4
+(f x)                           t5
+(g f x)                         t6
+
+Expression                      Type Equation
+proc(? x, ? p, ? f, ?g)
+  if (p add1(x))
+  then add1((f x))
+  else (g f x)                  t0 = (tx * tp * tf * tg -> t1)
+if (p add1(x))
+  then add1((f x))
+  else (g f x)                  t1 = t4 = t6
+(p add1(x))                     tp = (t3 -> t2)
+add1(x)                         (int -> int) = (tx -> t3)
+add1((f x))                     (int -> int) = (t5 -> t4)
+(f x)                           tf = (tx -> t5)
+(g f x)                         tg = (tf * tx -> t6)
+
+Deductions:
+tx = int
+t3 = int
+t5 = int
+t4 = int
+t1 = int
+t6 = int
+t2 = bool
+tp = (int -> int)
+tf = (int -> int)
+tg = ((int -> int) * int -> int)
+
+Finally:
+t0 = (int * (int -> int) * (int -> int) * ((int -> int) * int -> int) -> int)
+
+--
+
+4. let x = 3 f = proc(? x) add1(x) in (f x)
+
+Expression                      Type Variable
+x                               tx
+f                               tf
+let x = 3
+    f = proc(? x) add1(x)
+  in (f x)                      t0
+proc(? x) add1(x)               t1
+add1(x)                         t2
+(f x)                           t3
+
+Expression                      Type Equation
+let x = 3
+    f = proc(? x) add1(x)
+  in (f x)                      t0 = t3
+proc(? x) add1(x)               t1 = (int -> t2)
+add1(x)                         (int -> int) = (tx -> t2)
+(f x)                           tf = (int -> t2) = (tx -> t3)
+
+Deductions:
+tx = int
+t2 = int
+t1 = (int -> int)
+t3 = int
+t0 = int

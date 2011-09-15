@@ -1,0 +1,18 @@
+In the following specification, e stands for element, [0] stands for the representation
+of the empty stack and [s] is the representation of stack s:
+
+(empty-stack) = [0] ;
+
+(push e [s]) = [t] where (top [t]) = e and (pop [t]) = [s]
+
+(pop [s]) = error if (empty-stack? [s]),
+            [t] where (push (top [s]) t) = s otherwise
+
+(top [s]) = error if (empty-stack? [s]),
+            e where (push e (pop [s])) = [s] otherwise
+
+(empty-stack? [s]) = true if [s] = [0],
+                     false otherwise
+
+Constructors: empty-stack, push and pop
+Observers: top, empty-stack?

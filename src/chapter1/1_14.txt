@@ -1,0 +1,37 @@
+Given that 0<=n<length(von), we must prove that partial-vector-sum is correct. Here is the procedure in
+question:
+
+(define partial-vector-sum
+  (lambda (von n)
+    (if (zero? n)
+      0
+      (+ (vector-ref von (- n 1))
+         (partial-vector-sum von (- n 1))))))
+
+Proof by induction. The induction hypothesis, IH(n), is that partial-vector-sum returns the sum of the elements
+[0..n] of any vector.
+
+  1. An empty vector has no elements by definition, therefore partial-vector-sum applied to that vector is 0.
+     IH(0) holds trivially.
+
+  2. Given that H(k) holds, meaning that partial-vector-sum is the sum of the elements [0..k] of a vector v,
+     we need to show that IH(k+1) holds also: partial-vector-sum is the sum of the elements [0..k+1] of the
+     same vector v.
+
+     By IH(k), we know that:
+
+     0 + v[1] + v[2] + ... + v[k] = m
+
+     Being m the result of partial-vector-sum of the elements [0..k] of v. v[i] is just the value of (vector-ref v k),
+     in a more concise way.
+
+     Since the vector v is not empty, we have that the sum for the k+1 first elements is given by:
+
+     0 + v[1] + v[2] + ... + v[k] + v[k+1]
+
+     By IH(k), we now have that:
+
+     0 + v[1] + v[2] + ... + v[k] + v[k+1] = m + v[k+1]
+
+     This means that partial-vector-sum of the elements [0..k+1] of v is m + v[k+1], which completes the proof
+     of the claim that IH(k+1) holds, and thus completes the induction.

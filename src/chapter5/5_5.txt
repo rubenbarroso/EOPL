@@ -1,0 +1,6 @@
+These implementations are already provided by the book authors:
+
+/Users/ruben/Dropbox/EOPL/src/interps/5-4-1.scm
+/Users/ruben/Dropbox/EOPL/src/interps/5-4-2.scm
+/Users/ruben/Dropbox/EOPL/src/interps/5-4-3.scm
+/Users/ruben/Dropbox/EOPL/src/interps/5-4-4.scm

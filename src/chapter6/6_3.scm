@@ -1,0 +1,1 @@
+;The program in Figuer 6.1 tests quite thoroughly the interpreter

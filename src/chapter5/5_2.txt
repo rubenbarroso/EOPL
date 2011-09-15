@@ -1,0 +1,2 @@
+Because every variable name can appear at most once on each rib, hence list-find-position and
+list-find-last-position will always return the same result.

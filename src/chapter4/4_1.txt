@@ -1,0 +1,27 @@
+The identity function proc (x) x:
+
+(type-of-expression <<x>> [x = int]tenv) = int
+-------------------------------------------------------
+(type-of-expression <<proc (x) x>> tenv) = (int -> int)
+
+
+(type-of-expression <<x>> [x = bool]tenv) = bool
+---------------------------------------------------------
+(type-of-expression <<proc (x) x>> tenv) = (bool -> bool)
+
+
+
+
+For function composition proc (x) proc (y) (x y):
+
+(type-of-expression <<proc (y) (x y)>> [x = (int -> int), y = int]tenv) = (int -> int)
+--------------------------------------------------------------------------------------
+(type-of-expression <<proc (x) proc (y) (x y)>> tenv) = ((int -> int) -> (int -> int))
+
+
+(type-of-expression <<proc (y) (x y)>> [x = (int -> bool), y = int]tenv) = (int -> bool)
+--------------------------------------------------------------------------------------
+(type-of-expression <<proc (x) proc (y) (x y)>> tenv) = ((int -> bool) -> (int -> bool))
+
+
+They don't have the same types.

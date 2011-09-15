@@ -1,0 +1,1 @@
+In elaborate-class-decl!, we can see that subclasses share the field-ids of their superclasses.

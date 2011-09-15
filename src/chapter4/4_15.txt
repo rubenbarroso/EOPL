@@ -1,0 +1,126 @@
+Let's develop a couple of examples to illustrate how let would deal with type inference:
+
+let a = 1
+    p = proc(? x, ? f) (f x)
+in (p -(a,2) proc(? y) *(y,3))
+
+If we remember from lambda calculus, let is just syntactic sugar for a lambda expression:
+
+(let ((a 1)
+      (p (lambda (x f) (f x))))
+  (p (- a 2)
+     (lambda (y) (* y 3))))
+
+((lambda (a p)
+   (p (- a 2)
+      (lambda (y) (* y 3))))
+ 1
+ (lambda (x f) (f x)))
+
+
+Therefore, applying such transformation to our original expression in the implemented language, we have:
+
+(proc(? a, ? p)
+  (p -(a,2) proc(? y) *(y,3))
+ 1
+ proc(? x, ? f) (f x))
+
+
+We resolve the type equations for this expression:
+
+Expression                      Type Variable
+x                               tx
+f                               tf
+a                               ta
+y                               ty
+p                               tp
+(proc(? a, ? p)
+  (p -(a,2) proc(? y) *(y,3))
+ 1
+ proc(? x, ? f) (f x))          t0
+proc(? a, ? p)
+  (p -(a,2) proc(? y) *(y,3))   t1
+(p -(a,2) proc(? y) *(y,3))     t2
+-(a,2)                          t3
+proc(? y) *(y,3)                t4
+*(y,3)                          t5
+(f x)                           t6
+proc(? x, ? f) (f x)            t7
+
+
+     Expression                      Type Equation
+(1)  (proc(? a, ? p)
+       (p -(a,2) proc(? y) *(y,3))
+      1
+      proc(? x, ? f) (f x))          t1 = (int * t7 -> t0)
+(2)  proc(? a, ? p)
+      (p -(a,2) proc(? y) *(y,3))    t1 = (ta * tp -> t2)
+(3)  (p -(a,2) proc(? y) *(y,3))     tp = (t3 * t4 -> t2)
+(4)  -(a,2)                          (int * int -> int) = (ta * int -> t3)
+(5)  proc(? y) *(y,3)                t4 = (ty -> t5)
+(6)  *(y,3)                          (int * int -> int) = (ty * int -> t5)
+(7)  (f x)                           tf = (tx -> t6)
+(8)  proc(? x, ? f) (f x)            t7 = (tx * tf -> t6)
+
+Direct deductions from equations (4) and (6):
+
+ta = int
+ty = int
+t3 = int
+t5 = int
+
+
+We can infer t4 from equation (5):
+
+t4 = (int -> int)
+
+
+Equations (1) and (2) can be reduced to:
+
+ (9)  (int * t7 -> t0) = (ta * tp -> t2)
+
+From which we extract the following equations:
+
+ (10)  t7 = tp
+ (11)  t0 = t2
+
+
+From (3), (8) amd (10):
+
+ (12) (tx * tf -> t6) = (t3 * t4 -> t2)
+
+
+Knowing that t3 = int and substituting in (12), we have:
+
+tx = int
+
+Same with t4 = (int -> int) and (12):
+
+ (13) tf = (int -> int)
+
+
+With (7) and (13):
+
+ (14) tf = (tx -> t6)
+
+Hence, using (13) and (14):
+t6 = int
+
+
+Now, t7 can easily be calculated using applying (8):
+
+t7 = (int * int -> int)
+
+
+From (12) and (9), we have that t2 = t6 = t0, and since t6 = int:
+
+t2 = int
+t0 = int
+
+
+Lastly, applying our deductions to (1):
+
+t1 = (int * (int * int -> int) -> int)
+
+
+The inferred type for our original expression is the type assigned to t0, that is, int.
